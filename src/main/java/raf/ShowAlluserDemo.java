@@ -26,5 +26,7 @@ public class ShowAlluserDemo {
            int age = raf.readInt();
            System.out.println(username+","+password+","+nickname+","+age);
        }
+
+       raf.close();
     }
 }
