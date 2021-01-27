@@ -15,7 +15,7 @@ public class IndexOfDemo {
         index = str.indexOf("in",3);//从下标3开始找起来出现in的位置
         System.out.println(index);
 
-        index = str.lastIndexOf("in");//检索str最后一次出现in的位置
+        index = str.lastIndexOf("x");//检索str最后一次出现in的位置
         System.out.println(index);
         //如果想判断一个邮箱里面只能出现一个@ 判断第一次和最后一次出现的地址值是否匹配就可以
         //str.indexof==str.lastof
