@@ -24,7 +24,7 @@ public class RAFDemo1 {
         RandomAccessFile raf = new RandomAccessFile(
           "./raf.dat","rw"
         );
-       //向文件爱你中写入一个字节的二进制数据
+       //向文件中写入一个字节的二进制数据
         /*
         void write(int d)
         向文件中写入一个字节，写入的是给定的int值 所对应的2进制
