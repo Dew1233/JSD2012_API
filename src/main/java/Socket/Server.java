@@ -46,21 +46,14 @@ public class Server {
             连接 一旦一个客户端建立连接 此时accept方法就会
             立即返回一个Socket实例，通过这个Socket就可以与连接的客户端进行交互
              */
-            System.out.println("等待客户端连接");
-            Socket socket = serverSocket.accept();
-            System.out.println("一个客户端连接了");
-
-            BufferedReader br = new BufferedReader(
-                    new InputStreamReader(
-                            socket.getInputStream(),"utf-8"
-                    )
-            );
-            /*String msg = br.readLine();
-            System.out.println("客户端说："+msg);*/
-            while (true){
-                String msg = br.readLine();
-                System.out.println(msg);
-            }
+          while (true){
+              System.out.println("等待客户端连接……");
+              Socket socket = serverSocket.accept();
+              System.out.println("一个客户端连接了");
+              Runnable handler = new ClientHandler(socket);
+              Thread t = new Thread(handler);
+              t.start();
+          }
         }catch(IOException e){
             e.printStackTrace();
         }
@@ -70,5 +63,32 @@ public class Server {
     public static void main(String[] args) {
         Server server = new Server();
         server.start();
+    }
+    private class ClientHandler implements Runnable{
+        private Socket socket;
+
+        public ClientHandler(Socket socket){
+            this.socket = socket;
+        }
+
+        public void run(){
+            try{
+                /*
+                    Socket提供的方法:
+                    InputStream getInputStream()
+                    通过socket获取的输入流可以读取远端计算机发送过来的数据
+                 */
+                InputStream in = socket.getInputStream();
+                InputStreamReader isr = new InputStreamReader(
+                        in, "UTF-8");
+                BufferedReader br = new BufferedReader(isr);
+                String line;
+                while ((line = br.readLine()) != null) {
+                    System.out.println("客户端说:" + line);
+                }
+            }catch(IOException e){
+                e.printStackTrace();
+            }
+        }
     }
 }

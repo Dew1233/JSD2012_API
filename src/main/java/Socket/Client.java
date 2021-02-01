@@ -49,18 +49,27 @@ public class Client {
                         ),true
                 );
                 ) {
+            Scanner scan = new Scanner(System.in);
+            System.out.println("请输入文字，输入exit为退出");
+            while (true){
+                String line = scan.nextLine();
+                if("exit".equals(line)){
+                    break;
+                }
+                pw.println(line);
+            }
+
+            while(true){
+
+            }
             /*
             Socket提供的方法
             OutputStream getOutputStream()
             该方法会返回一个字节输出流，通过这个输出流写出的字节
             会通过网络发送给远端计算机
              */
-            Scanner scan = new Scanner(System.in);
 
-            while (true){
-                String msg = scan.nextLine();
-                pw.println(msg);
-            }
+
 
         } catch (IOException e) {
             e.printStackTrace();
