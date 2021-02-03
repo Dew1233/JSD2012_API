@@ -28,8 +28,8 @@ public class Client {
              通过这个端口可以找到服务端计算机运行的服务端应用程序
             */
            System.out.println("正在连接服务端……");
-//           176.212.28.194
-           socket = new Socket("localhost",8088);
+//           176.212.28.201   176.212.28.215
+           socket = new Socket("176.212.28.201",8088);
            System.out.println("与服务端建立连接！");
        }catch (IOException e){
            e.printStackTrace();
@@ -40,6 +40,11 @@ public class Client {
      * 客户端开始工作的方法
      */
     public void start(){
+        //先启动读取服务端发送过来消息的线程
+        ServerHandler handler = new ServerHandler();
+        Thread t = new Thread(handler);
+        t.setDaemon(true);
+        t.start();
         try(
                 PrintWriter pw = new PrintWriter(
                         new BufferedWriter(
@@ -48,6 +53,7 @@ public class Client {
                                 )
                         ),true
                 );
+
                 ) {
             Scanner scan = new Scanner(System.in);
             System.out.println("请输入文字，输入exit为退出");
@@ -59,18 +65,6 @@ public class Client {
                 pw.println(line);
             }
 
-            while(true){
-
-            }
-            /*
-            Socket提供的方法
-            OutputStream getOutputStream()
-            该方法会返回一个字节输出流，通过这个输出流写出的字节
-            会通过网络发送给远端计算机
-             */
-
-
-
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -79,5 +73,24 @@ public class Client {
     public static void main(String[] args){
         Client client = new Client();
         client.start();
+    }
+    //该线程负责读取服务端发送过来的消息
+    private class ServerHandler implements Runnable{
+        public void run(){
+            try(   BufferedReader br = new BufferedReader(
+                    new InputStreamReader(
+                            socket.getInputStream(),"utf-8"
+                    )
+                    );
+            ){
+                String line ;
+                //读取服务端发送过来的每一行字符串并输出到客户端的控制台
+                while ((line = br.readLine())!=null){
+                    System.out.println(line);
+                }
+            }catch(IOException e){
+                e.printStackTrace();
+            }
+        }
     }
 }
