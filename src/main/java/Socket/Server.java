@@ -3,7 +3,9 @@ package Socket;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 
 /**
  * 服务端
@@ -11,7 +13,8 @@ import java.util.Arrays;
 public class Server {
     private ServerSocket serverSocket;
     //        用于保存所有客户端输出流的数组用于让ClientHandler之间共享输出流广播消息使用
-    private PrintWriter[] allOut = {};
+   // private PrintWriter[] allOut = {};
+    private Collection<PrintWriter> allOut = new ArrayList<>();
     /*
     java.net.ServerScoket
     ServerSocket是运行在服务端的。它主要有两个作用
@@ -104,36 +107,44 @@ public class Server {
 //                不行 因为同步块中有扩容操作 allout对象指向的数组对象在变化
 //                synchronized (allOut)
 //                synchronized (serverSocket){
-                synchronized (Server.class){
-                //1先将allout数组扩容
+                synchronized (Server.class) {
+               /* //1先将allout数组扩容
                 allOut = Arrays.copyOf(allOut,allOut.length+1);
                 //2将当前pw存入数组最后一个位置
                 allOut[allOut.length-1] = pw;
+                }*/
+                    allOut.add(pw);
+                    System.out.println("一个host上线了！当前在线人数：" + allOut.size());
                 }
-                System.out.println("一个host上线了！当前在线人数："+allOut.length);
-
                 String line;
                 while ((line = br.readLine()) != null) {
                     System.out.println(host+"说" + line);
                     //将消息发送给当前客户端
-                    for (int i = 0;i< allOut.length;i++){
+                   /* for (int i = 0;i< allOut.length;i++){
                         allOut[i].println(host+"说:"+line);
+                    }*/
+                    synchronized (Server.class){
+                        for (PrintWriter o :allOut){
+                            o.println(host+"说:"+line);
+                        }
                     }
+
                 }
             }catch(IOException e){
                 e.printStackTrace();
             }finally {
                 //处理该客户端断开连接后的操作
                 synchronized (Server.class) {
-                    for (int i = 0; i < allOut.length; i++) {
+                   /* for (int i = 0; i < allOut.length; i++) {
                         if (pw == allOut[i]) {
                             allOut[i] = allOut[allOut.length - 1];
                             allOut = Arrays.copyOf(allOut, allOut.length - 1);
                             break;
                         }
-                    }
-                }
-                System.out.println(host+"下线了！当前在线人数："+allOut.length);
+                    }*/
+                    allOut.remove(pw);
+                }System.out.println(host+"下线了！当前在线人数："+allOut.size());
+//                System.out.println(host+"下线了！当前在线人数："+allOut.length);
                 try {
                     //最终不再通讯时候要关闭socket
                     //socket关闭以后，要通过socket获取的输入流与输出流就自动关闭了
