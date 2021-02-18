@@ -40,6 +40,34 @@ public class MapDemo {
 
         value = map.put("语文",76);
         System.out.println(map);
+        System.out.println(value);
 
+        /*
+        V get(K k)
+        根据给获取对应的value.如果给定的key不存在，则返回值为null
+         */
+        value = map.get("数学");
+        System.out.println("数学:"+value);
+        value = map.get("体育");
+        System.out.println("体育:"+value);
+
+        int size = map.size();
+        System.out.println("size:"+size);
+
+        /*
+        V remove(Object key)
+        删除当前的键值对,返回值为这个key对应的value
+         */
+        value = map.remove("数学");
+        System.out.println(map);
+        System.out.println(value);
+
+        //判断Map是否包含给定的key
+        boolean ck = map.containsKey("英语");
+
+        //判断Map是否包含给定的value
+        boolean cv = map.containsValue("97");
+        System.out.println("包含ck:"+ck);
+        System.out.println("包含cv:"+cv);
     }
 }
