@@ -3,9 +3,7 @@ package Socket;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
+import java.util.*;
 
 /**
  * 服务端
@@ -14,7 +12,12 @@ public class Server {
     private ServerSocket serverSocket;
     //        用于保存所有客户端输出流的数组用于让ClientHandler之间共享输出流广播消息使用
    // private PrintWriter[] allOut = {};
-    private Collection<PrintWriter> allOut = new ArrayList<>();
+    //ArrayList不是并发安全的集合
+//    private Collection<PrintWriter> allOut = new ArrayList<>();
+    //基于ArrayList创建一个并发安全的额吉诃存放所有输出流
+    private List<PrintWriter> allOut = Collections.synchronizedList(new ArrayList<>());
+
+
     /*
     java.net.ServerScoket
     ServerSocket是运行在服务端的。它主要有两个作用
@@ -107,28 +110,31 @@ public class Server {
 //                不行 因为同步块中有扩容操作 allout对象指向的数组对象在变化
 //                synchronized (allOut)
 //                synchronized (serverSocket){
-                synchronized (Server.class) {
+//                synchronized (Server.class) {
                /* //1先将allout数组扩容
                 allOut = Arrays.copyOf(allOut,allOut.length+1);
                 //2将当前pw存入数组最后一个位置
                 allOut[allOut.length-1] = pw;
                 }*/
                     allOut.add(pw);
+                    //如果当前集合是并发安全的集合 则不需要同步块控制了
                     System.out.println("一个host上线了！当前在线人数：" + allOut.size());
-                }
+//                }
                 String line;
                 while ((line = br.readLine()) != null) {
+                    String message = line;
                     System.out.println(host+"说" + line);
                     //将消息发送给当前客户端
                    /* for (int i = 0;i< allOut.length;i++){
                         allOut[i].println(host+"说:"+line);
                     }*/
-                    synchronized (Server.class){
-                        for (PrintWriter o :allOut){
+//                    synchronized (Server.class){
+                       /* for (PrintWriter o :allOut){
                             o.println(host+"说:"+line);
-                        }
-                    }
+                     }*/
+//                    }
 
+                    allOut.forEach(o->o.println(host+"说:"+message));
                 }
             }catch(IOException e){
                 e.printStackTrace();
