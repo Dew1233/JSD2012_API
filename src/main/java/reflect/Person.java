@@ -23,9 +23,14 @@ public class Person {
     }
     public void say(String line,int num){
         for (int i =0;i<num;i++){
-            System.out.println(num+":"+name);
+            System.out.println(name+":"+line);
         }
     }
+
+    private void hehe(){
+        System.out.println("我是Person的私有方法!!!");
+    }
+
     public String getName() {
         return name;
     }
@@ -40,5 +45,13 @@ public class Person {
 
     public void setAge(int age) {
         this.age = age;
+    }
+
+    @Override
+    public String toString() {
+        return "Person{" +
+                "name='" + name + '\'' +
+                ", age=" + age +
+                '}';
     }
 }

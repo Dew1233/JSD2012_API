@@ -10,7 +10,7 @@ import java.util.Scanner;
  * 但是反射带来的更多的系统开销和较慢的运行效率
  * 所以不能过度的依赖反射机制
  */
-public class RefletctDemo1 {
+public class ReflectDemo1 {
     public static void main(String[] args) throws ClassNotFoundException {
         /*
         Class类，称为类对象。java中每个被JVM加载的类有且只有唯一一个Class实例与之对应
